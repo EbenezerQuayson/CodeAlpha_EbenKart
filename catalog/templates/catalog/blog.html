@@ -1,0 +1,52 @@
+{% extends 'catalog/base.html' %}
+{% load static %}
+
+{% block content %}
+    <!-- Page Header -->
+    <header class="page-header">
+        <h1>The EbenKart Journal</h1>
+        <p>Insights, styling guides, and premium fashion culture</p>
+    </header>
+
+    <!-- Blog Container -->
+    <div class="blog-container">
+        <!-- Post 1 -->
+        <article class="blog-post">
+            <div class="blog-image">
+                <img src="{% static 'catalog/images/blog/1.jpg' %}" alt="Luxury horology">
+            </div>
+            <div class="blog-content">
+                <span class="blog-date">May 15, 2026</span>
+                <h2>Timeless Craftsmanship: The Watch Guide</h2>
+                <p>Delve into the intricate world of luxury horology. Discover what makes a mechanical movement tick, the history of fine watchmaking, and how to select a timepiece that lasts generations and defines your style.</p>
+                <a href="#" class="btn-link">Read More →</a>
+            </div>
+        </article>
+
+        <!-- Post 2 -->
+        <article class="blog-post">
+            <div class="blog-image">
+                <img src="{% static 'catalog/images/blog/2.jpg' %}" alt="Footwear aesthetics">
+            </div>
+            <div class="blog-content">
+                <span class="blog-date">May 10, 2026</span>
+                <h2>Stepping Out: Modern Footwear Aesthetics</h2>
+                <p>Footwear is the foundation of any great style. We explore the rise of premium hand-stitched leather sneakers and how to seamlessly integrate comfort with elegant, smart-casual silhouettes.</p>
+                <a href="#" class="btn-link">Read More →</a>
+            </div>
+        </article>
+
+        <!-- Post 3 -->
+        <article class="blog-post">
+            <div class="blog-image">
+                <img src="{% static 'catalog/images/blog/3.jpg' %}" alt="Minimalism in design">
+            </div>
+            <div class="blog-content">
+                <span class="blog-date">May 01, 2026</span>
+                <h2>Minimalism in Design: Less is More</h2>
+                <p>Explore the philosophy behind our curated accessory lines. Simple silhouettes, high-grade materials, and a look at why functional, clean-cut design never goes out of style.</p>
+                <a href="#" class="btn-link">Read More →</a>
+            </div>
+        </article>
+    </div>
+{% endblock %}
