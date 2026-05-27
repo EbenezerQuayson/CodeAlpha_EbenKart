@@ -11,7 +11,6 @@ urlpatterns = [
     path('products/', catalog_views.shop_home, name='shop_home'),
     path('products/<int:product_id>/', catalog_views.product_detail, name='product_detail'),
     path('categories/', catalog_views.categories_view, name='categories_view'),
-    path('blog/', catalog_views.blog_view, name='blog_view'),
     path('contact/', catalog_views.contact_view, name='contact_view'),
     
     # Add the home route here:

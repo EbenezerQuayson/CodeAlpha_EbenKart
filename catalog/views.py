@@ -69,9 +69,6 @@ def shop_home(request):
 def categories_view(request):
     return render(request, 'catalog/categories.html')
 
-def blog_view(request):
-    return render(request, 'catalog/blog.html')
-
 def contact_view(request):
     if request.method == 'POST':
         name = request.POST.get('name')
