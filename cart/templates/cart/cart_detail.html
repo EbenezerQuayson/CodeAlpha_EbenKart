@@ -1,0 +1,77 @@
+{% extends 'catalog/base.html' %}
+{% load static %}
+
+{% block content %}
+<section class="cart-section">
+    <h2 style="margin-bottom: 2rem; font-size: 2rem; font-weight: 700;">Your Shopping Cart 🛒</h2>
+
+    {% if items %}
+    <div class="cart-container">
+        <!-- Cart Items List -->
+        <div class="cart-items-list">
+            {% for item in items %}
+            <div class="cart-item">
+                <div class="cart-item-image">
+                    {% if item.product.image_url %}
+                        <img src="{{ item.product.image_url }}" alt="{{ item.product.name }}">
+                    {% else %}
+                        <div style="height: 100%; display: flex; align-items: center; justify-content: center; background: var(--border); font-size: 0.8rem;">
+                            No Image
+                        </div>
+                    {% endif %}
+                </div>
+                <div class="cart-item-details">
+                    <h3>{{ item.product.name }}</h3>
+                    <p style="color: var(--accent); font-weight: 600; font-size: 1.05rem;">GH₵ {{ item.product.price }}</p>
+                    <small style="color: var(--text-light);">In Stock: {{ item.product.stock_quantity }}</small>
+                </div>
+                <div class="cart-item-quantity">
+                    <span class="qty-badge">Qty: {{ item.quantity }}</span>
+                </div>
+                <div class="cart-item-remove">
+                    <a href="{% url 'remove_from_cart' item.id %}">Remove</a>
+                </div>
+            </div>
+            {% endfor %}
+
+            <div style="margin-top: 2rem;">
+                <a href="{% url 'shop_home' %}" class="btn-secondary">
+                    ← Continue Shopping
+                </a>
+            </div>
+        </div>
+
+        <!-- Order Summary Sidebar -->
+        <aside class="cart-summary">
+            <h2>Order Summary</h2>
+            <div class="summary-item">
+                <span>Subtotal</span>
+                <span>GH₵ {{ cart_total }}</span>
+            </div>
+            <div class="summary-item">
+                <span>Delivery / Shipping</span>
+                <span style="color: var(--success); font-weight: 600;">FREE</span>
+            </div>
+            <div class="summary-item total">
+                <span>Total</span>
+                <span>GH₵ {{ cart_total }}</span>
+            </div>
+            
+            <form action="{% url 'checkout' %}" method="post">
+                {% csrf_token %}
+                <button type="submit" class="btn-primary">
+                    Proceed to Checkout
+                </button>
+            </form>
+        </aside>
+    </div>
+    {% else %}
+    <div class="empty-cart">
+        <span class="empty-icon">🛒</span>
+        <h3>Your shopping cart is empty</h3>
+        <p>Browse our catalog to find premium items to add to your cart.</p>
+        <a href="{% url 'shop_home' %}" class="btn-primary">Go to Shop</a>
+    </div>
+    {% endif %}
+</section>
+{% endblock %}

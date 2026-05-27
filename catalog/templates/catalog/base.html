@@ -1,0 +1,134 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EbenKart - Premium Fashion & Accessories</title>
+    <link rel="stylesheet" href="{% static 'catalog/css/styles.css' %}">
+</head>
+<body>
+
+    <!-- Header Navigation -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="{% url 'home' %}" class="logo">EbenKart</a>
+            
+            <ul class="nav-menu">
+                <li><a href="{% url 'home' %}" class="{% if request.resolver_match.url_name == 'home' %}active{% endif %}">Home</a></li>
+                <li><a href="{% url 'shop_home' %}" class="{% if request.resolver_match.url_name == 'shop_home' %}active{% endif %}">Shop</a></li>
+                <li><a href="{% url 'categories_view' %}" class="{% if request.resolver_match.url_name == 'categories_view' %}active{% endif %}">Categories</a></li>
+                <li><a href="{% url 'contact_view' %}" class="{% if request.resolver_match.url_name == 'contact_view' %}active{% endif %}">Contact</a></li>
+            </ul>
+            
+            <div class="nav-icons">
+                <!-- Cart Icon with dynamic badge -->
+                <a class="cart-icon" href="{% url 'cart_detail' %}">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="9" cy="21" r="1"></circle>
+                        <circle cx="20" cy="21" r="1"></circle>
+                        <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
+                    </svg>
+                    {% if cart_count > 0 %}
+                        <span class="cart-count">{{ cart_count }}</span>
+                    {% endif %}
+                </a>
+                
+                <!-- Authentication Status -->
+                <div class="user-menu">
+                    {% if user.is_authenticated %}
+                        <div class="user-dropdown-container">
+                            <div class="avatar-circle" id="avatarBtn" onclick="toggleDropdown(event)" title="Account Options">
+                                {{ user.username|slice:":2"|upper }}
+                            </div>
+                            <div class="dropdown-menu-list" id="userDropdown">
+                                <div class="dropdown-header">Logged in as: <strong>{{ user.username }}</strong></div>
+                                <div class="dropdown-divider"></div>
+                                <a href="#" class="dropdown-item">My Profile</a>
+                                <a href="{% url 'cart_detail' %}" class="dropdown-item">My Cart ({{ cart_count }})</a>
+                                <form method="post" action="{% url 'logout' %}" style="display: block; margin: 0;">
+                                    {% csrf_token %}
+                                    <button type="submit" class="dropdown-item logout-btn">Logout</button>
+                                </form>
+                            </div>
+                        </div>
+                    {% else %}
+                        <a href="{% url 'login' %}" class="btn-link">Login</a>
+                        <a href="{% url 'register' %}" class="btn-primary" style="padding: 0.4rem 1rem; font-size: 0.85rem;">Register</a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Message Alerts Container -->
+    {% if messages %}
+    <div class="alert-container">
+        {% for message in messages %}
+            <div class="alert alert-{% if message.tags == 'error' %}danger{% else %}{{ message.tags }}{% endif %}">
+                <span>{{ message }}</span>
+                <button type="button" class="alert-close" onclick="this.parentElement.remove()">&times;</button>
+            </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+
+    <!-- Main Content Area -->
+    <main>
+        {% block content %}
+        {% endblock %}
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="footer-section">
+                <h4>About Us</h4>
+                <p>EbenKart brings you curated premium fashion and accessories with impeccable taste and quality.</p>
+                <div style="margin-top: 1rem;">
+                    <img src="{% static 'catalog/images/payment.png' %}" alt="Payment methods" style="max-width: 150px; opacity: 0.8;">
+                </div>
+            </div>
+            
+            <div class="footer-section">
+                <h4>Quick Links</h4>
+                <ul>
+                    <li><a href="{% url 'shop_home' %}">Shop</a></li>
+                    <li><a href="{% url 'categories_view' %}">Categories</a></li>
+                    <li><a href="{% url 'contact_view' %}">Contact</a></li>
+                </ul>
+            </div>
+            
+            <div class="footer-section">
+                <h4>Contact Info</h4>
+                <p>Email: ebenezerquayson379@gmail.com</p>
+                <p>Phone: +233 538697161</p>
+                <p>Location: Accra, Ghana</p>
+            </div>
+        </div>
+        
+        <div class="footer-bottom">
+            <p>&copy; {% now "Y" %} EbenKart. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script>
+        function toggleDropdown(event) {
+            event.stopPropagation();
+            const dropdown = document.getElementById('userDropdown');
+            dropdown.classList.toggle('show');
+        }
+
+        // Close the dropdown if clicking outside
+        document.addEventListener('click', function(event) {
+            const dropdown = document.getElementById('userDropdown');
+            const avatar = document.getElementById('avatarBtn');
+            if (dropdown && dropdown.classList.contains('show')) {
+                if (!dropdown.contains(event.target) && event.target !== avatar) {
+                    dropdown.classList.remove('show');
+                }
+            }
+        });
+    </script>
+</body>
+</html>

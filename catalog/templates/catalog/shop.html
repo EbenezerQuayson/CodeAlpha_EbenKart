@@ -1,0 +1,110 @@
+{% extends 'catalog/base.html' %}
+{% load static %}
+
+{% block content %}
+    <!-- Page Header -->
+    <header class="page-header">
+        <h1>Shop Collection</h1>
+        <p>Curated premium fashion, timeless accessories, and lifestyle essentials</p>
+    </header>
+
+    <!-- Shop Container -->
+    <div class="shop-container">
+        <!-- Sidebar Filters -->
+        <aside class="filters">
+            <form method="get" action="{% url 'shop_home' %}" id="filter-form">
+                <h3>Filters</h3>
+                
+                <!-- Categories -->
+                <div class="filter-group">
+                    <h4 style="font-size: 0.95rem; margin-bottom: 0.75rem; text-transform: uppercase; letter-spacing: 0.5px;">Categories</h4>
+                    <label>
+                        <input type="checkbox" name="category" value="watches" {% if 'watches' in selected_categories %}checked{% endif %} onchange="this.form.submit()">
+                        Watches
+                    </label>
+                    <label>
+                        <input type="checkbox" name="category" value="shoes" {% if 'shoes' in selected_categories %}checked{% endif %} onchange="this.form.submit()">
+                        Shoes
+                    </label>
+                    <label>
+                        <input type="checkbox" name="category" value="accessories" {% if 'accessories' in selected_categories %}checked{% endif %} onchange="this.form.submit()">
+                        Accessories
+                    </label>
+                    <label>
+                        <input type="checkbox" name="category" value="clothes" {% if 'clothes' in selected_categories %}checked{% endif %} onchange="this.form.submit()">
+                        Clothes
+                    </label>
+                </div>
+                
+                <!-- Price Range -->
+                <div class="filter-group">
+                    <h4 style="font-size: 0.95rem; margin-bottom: 0.75rem; text-transform: uppercase; letter-spacing: 0.5px;">Max Price</h4>
+                    <input type="range" name="price_range" id="price-range" min="50" max="500" step="10" value="{{ price_range }}" onchange="this.form.submit()">
+                    <p>Price: Up to <strong style="color: var(--accent);">GH₵ <span id="price-value">{{ price_range }}</span></strong></p>
+                </div>
+
+                <!-- Sorting -->
+                <div class="filter-group">
+                    <h4 style="font-size: 0.95rem; margin-bottom: 0.75rem; text-transform: uppercase; letter-spacing: 0.5px;">Sort By</h4>
+                    <select name="sort" style="width: 100%; padding: 0.5rem; border: 1px solid var(--border); border-radius: 4px; font-family: inherit; font-size: 0.95rem;" onchange="this.form.submit()">
+                        <option value="" {% if not sort_by %}selected{% endif %}>Default</option>
+                        <option value="price_low" {% if sort_by == 'price_low' %}selected{% endif %}>Price: Low to High</option>
+                        <option value="price_high" {% if sort_by == 'price_high' %}selected{% endif %}>Price: High to Low</option>
+                    </select>
+                </div>
+
+                <!-- Reset Filters Button -->
+                <a href="{% url 'shop_home' %}" class="btn-secondary" style="width: 100%; text-align: center; padding: 0.5rem; font-size: 0.9rem;">
+                    Clear All Filters
+                </a>
+            </form>
+        </aside>
+
+        <!-- Products Grid Area -->
+        <section class="products-grid-section">
+            <div class="products-grid">
+                {% for product in products %}
+                <article class="product-card">
+                    <div class="product-image">
+                        <a href="{% url 'product_detail' product.id %}">
+                            {% if product.image_url %}
+                                <img src="{{ product.image_url }}" alt="{{ product.name }}">
+                            {% else %}
+                                <div style="height: 100%; display: flex; align-items: center; justify-content: center; background: var(--border); font-size: 0.9rem;">
+                                    No Image Available
+                                </div>
+                            {% endif %}
+                        </a>
+                    </div>
+                    <h3><a href="{% url 'product_detail' product.id %}" style="text-decoration: none; color: inherit;">{{ product.name }}</a></h3>
+                    <p class="price">GH₵ {{ product.price }}</p>
+                    
+                    {% if product.stock_quantity > 0 %}
+                        <a href="{% url 'add_to_cart' product.id %}" class="btn-secondary btn-add-to-cart">Add to Cart</a>
+                    {% else %}
+                        <button class="btn-secondary btn-add-to-cart" disabled style="opacity: 0.6; cursor: not-allowed; background: var(--border);">
+                            Out of Stock
+                        </button>
+                    {% endif %}
+                </article>
+                {% empty %}
+                <div style="grid-column: 1 / -1; text-align: center; padding: 5rem 2rem; background: white; border: 1px solid var(--border); border-radius: 8px;">
+                    <span style="font-size: 3rem; display: block; margin-bottom: 1rem;">🔍</span>
+                    <h3 class="text-dark">No Products Found</h3>
+                    <p class="text-muted" style="margin-top: 0.5rem;">We couldn't find any products matching your current filter selections.</p>
+                </div>
+                {% endfor %}
+            </div>
+        </section>
+    </div>
+
+    <!-- Script to dynamically update slider value on drag -->
+    <script>
+        const rangeInput = document.getElementById('price-range');
+        const priceVal = document.getElementById('price-value');
+        
+        rangeInput.addEventListener('input', function(e) {
+            priceVal.textContent = e.target.value;
+        });
+    </script>
+{% endblock %}

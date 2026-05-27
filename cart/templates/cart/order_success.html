@@ -1,0 +1,57 @@
+{% extends 'catalog/base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="success-card">
+    <div class="success-badge">✓</div>
+    
+    <h2>Thank you for your order!</h2>
+    <p class="text-muted" style="margin-top: 0.5rem; font-size: 1.05rem;">Your order has been successfully placed and is being processed.</p>
+    
+    <!-- Order Details Box -->
+    <div class="order-details-box">
+        <h3>Order Receipt</h3>
+        
+        <div class="order-summary-row">
+            <strong>Order ID:</strong>
+            <span style="color: var(--text-light);">#{{ order.id }}</span>
+        </div>
+        <div class="order-summary-row">
+            <strong>Status:</strong>
+            <span style="color: var(--accent); font-weight: 600;">{{ order.status }}</span>
+        </div>
+        <div class="order-summary-row">
+            <strong>Placed On:</strong>
+            <span style="color: var(--text-light);">{{ order.created_at|date:"F d, Y, h:i A" }}</span>
+        </div>
+        
+        <h4 style="margin-top: 2rem; font-size: 1.05rem; border-bottom: 1px solid var(--border); padding-bottom: 0.25rem;">Items Purchased</h4>
+        <table class="order-items-table">
+            <tbody>
+                {% for item in items %}
+                <tr>
+                    <td>
+                        <span style="font-weight: 600;">{{ item.product.name }}</span>
+                        <span style="color: var(--text-light); font-size: 0.8rem; margin-left: 0.5rem;">x {{ item.quantity }}</span>
+                    </td>
+                    <td style="text-align: right; font-weight: 600;">
+                        GH₵ {{ item.price }}
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        
+        <div class="order-summary-row total-row">
+            <span>Total Paid</span>
+            <span>GH₵ {{ order.total_price }}</span>
+        </div>
+    </div>
+    
+    <div style="margin-top: 2rem;">
+        <a href="{% url 'home' %}" class="btn-primary" style="padding: 0.8rem 2.5rem; border-radius: 30px;">
+            Back to Shop Homepage
+        </a>
+    </div>
+</div>
+{% endblock %}
