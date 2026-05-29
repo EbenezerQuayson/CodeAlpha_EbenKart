@@ -61,7 +61,7 @@ CodeAlpha_EbenKart/
 
 ---
 
-##  Installation & Run Guide
+## Installation & Run Guide
 
 > [!IMPORTANT]
 > **Directory Context:** All commands must be run from inside the `CodeAlpha_EbenKart` project folder. If you attempt to run python commands from the parent directory, you will receive `can't open file 'manage.py': [Errno 2] No such file or directory`.
@@ -142,6 +142,13 @@ Quit the server with CTRL-BREAK (or CTRL-C).
 ---
 
 ## Tech Stack
+
 * **Language:** Python
 * **Framework:** Django 6.0.5
 * **Database:** SQLite (local development database)
+
+---
+
+## License & Copyright
+
+&copy; 2026 EbenKart by Ebenezer Papa-Kyi Quayson. All rights reserved. Developed as part of CodeAlpha Projects during my June 2026 internship program.

@@ -41,10 +41,10 @@
         <div class="order-summary-row">
             <strong>Payment Method:</strong>
             <span style="color: var(--text-light);">
-                {% if order.payment_method == 'Visa' %}💳 Credit / Debit Card
-                {% elif order.payment_method == 'MobileMoney' %}📱 Mobile Money
-                {% elif order.payment_method == 'PayPal' %}🅿️ PayPal
-                {% else %}💵 Cash on Delivery
+                {% if order.payment_method == 'Visa' %}Credit / Debit Card
+                {% elif order.payment_method == 'MobileMoney' %}Mobile Money
+                {% elif order.payment_method == 'PayPal' %}PayPal
+                {% else %}Cash on Delivery
                 {% endif %}
             </span>
         </div>
