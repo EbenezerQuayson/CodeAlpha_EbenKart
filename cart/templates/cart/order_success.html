@@ -24,6 +24,30 @@
             <strong>Placed On:</strong>
             <span style="color: var(--text-light);">{{ order.created_at|date:"F d, Y, h:i A" }}</span>
         </div>
+        <div class="order-summary-row">
+            <strong>Fulfillment:</strong>
+            <span style="color: var(--text-light);">{{ order.delivery_type }}</span>
+        </div>
+        {% if order.delivery_type == 'Delivery' %}
+        <div class="order-summary-row">
+            <strong>Delivery Address:</strong>
+            <span style="color: var(--text-light);">{{ order.shipping_address }}, {{ order.shipping_city }}, {{ order.shipping_country }}</span>
+        </div>
+        {% endif %}
+        <div class="order-summary-row">
+            <strong>Contact Phone:</strong>
+            <span style="color: var(--text-light);">{{ order.shipping_phone }}</span>
+        </div>
+        <div class="order-summary-row">
+            <strong>Payment Method:</strong>
+            <span style="color: var(--text-light);">
+                {% if order.payment_method == 'Visa' %}💳 Credit / Debit Card
+                {% elif order.payment_method == 'MobileMoney' %}📱 Mobile Money
+                {% elif order.payment_method == 'PayPal' %}🅿️ PayPal
+                {% else %}💵 Cash on Delivery
+                {% endif %}
+            </span>
+        </div>
         
         <h4 style="margin-top: 2rem; font-size: 1.05rem; border-bottom: 1px solid var(--border); padding-bottom: 0.25rem;">Items Purchased</h4>
         <table class="order-items-table">
