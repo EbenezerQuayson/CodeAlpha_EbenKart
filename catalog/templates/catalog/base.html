@@ -57,6 +57,13 @@
                         <a href="{% url 'register' %}" class="btn-primary" style="padding: 0.4rem 1rem; font-size: 0.85rem;">Register</a>
                     {% endif %}
                 </div>
+
+                <!-- Hamburger Mobile Menu Toggle -->
+                <button class="menu-toggle" id="menuToggle" aria-label="Toggle Navigation" onclick="toggleMobileMenu(event)">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </button>
             </div>
         </div>
     </nav>
@@ -119,13 +126,32 @@
             dropdown.classList.toggle('show');
         }
 
-        // Close the dropdown if clicking outside
+        function toggleMobileMenu(event) {
+            event.stopPropagation();
+            const navMenu = document.querySelector('.nav-menu');
+            const toggleBtn = document.getElementById('menuToggle');
+            navMenu.classList.toggle('open');
+            toggleBtn.classList.toggle('active');
+        }
+
+        // Close the dropdowns and menus if clicking outside
         document.addEventListener('click', function(event) {
+            // Dropdown close
             const dropdown = document.getElementById('userDropdown');
             const avatar = document.getElementById('avatarBtn');
             if (dropdown && dropdown.classList.contains('show')) {
                 if (!dropdown.contains(event.target) && event.target !== avatar) {
                     dropdown.classList.remove('show');
+                }
+            }
+
+            // Mobile menu close
+            const navMenu = document.querySelector('.nav-menu');
+            const toggleBtn = document.getElementById('menuToggle');
+            if (navMenu && navMenu.classList.contains('open')) {
+                if (!navMenu.contains(event.target) && !toggleBtn.contains(event.target)) {
+                    navMenu.classList.remove('open');
+                    toggleBtn.classList.remove('active');
                 }
             }
         });
