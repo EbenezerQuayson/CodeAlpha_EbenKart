@@ -2,9 +2,13 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth import login
+from django.contrib.auth.decorators import login_required
 from django.db.models import Q
 from django.contrib import messages
-from .models import Product
+from .models import Product, UserProfile
+from .forms import UserUpdateForm, UserProfileForm
+from cart.models import Cart, Order
+
 
 def store_home(request):
     # Fetch up to 4 products for the featured section
@@ -84,3 +88,39 @@ def contact_view(request):
 def product_detail(request, product_id):
     product = get_object_or_404(Product, id=product_id)
     return render(request, 'catalog/product_detail.html', {'product': product})
+
+@login_required
+def profile_view(request):
+    profile, created = UserProfile.objects.get_or_create(user=request.user)
+    
+    if request.method == 'POST':
+        u_form = UserUpdateForm(request.POST, instance=request.user)
+        p_form = UserProfileForm(request.POST, instance=profile)
+        if u_form.is_valid() and p_form.is_valid():
+            u_form.save()
+            p_form.save()
+            messages.success(request, "Your profile has been updated successfully!")
+            return redirect('profile_view')
+        else:
+            messages.error(request, "Please correct the errors below.")
+    else:
+        u_form = UserUpdateForm(instance=request.user)
+        p_form = UserProfileForm(instance=profile)
+        
+    # Get active cart and items
+    cart, _ = Cart.objects.get_or_create(user=request.user)
+    cart_items = cart.items.all()
+    for item in cart_items:
+        item.subtotal = item.product.price * item.quantity
+        
+    # Get order history
+    orders = Order.objects.filter(user=request.user).order_by('-created_at')
+    
+    context = {
+        'u_form': u_form,
+        'p_form': p_form,
+        'cart_items': cart_items,
+        'orders': orders,
+        'active_tab': request.GET.get('tab', 'profile')
+    }
+    return render(request, 'catalog/profile.html', context)

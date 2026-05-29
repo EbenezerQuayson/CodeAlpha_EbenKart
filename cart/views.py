@@ -2,7 +2,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.db import transaction
 from django.contrib import messages
-from catalog.models import Product
+from catalog.models import Product, UserProfile
 from .models import Cart, CartItem, Order, OrderItem
 
 @login_required
@@ -57,12 +57,24 @@ def remove_from_cart(request, item_id):
 
 @login_required
 def checkout(request):
+    if request.method != 'POST':
+        return redirect('cart_detail')
+        
     cart, created = Cart.objects.get_or_create(user=request.user)
     items = cart.items.all()
     
     if not items.exists():
         messages.error(request, "Your shopping cart is empty.")
         return redirect('cart_detail')
+        
+    # Get checkout parameters from the POST form
+    delivery_type = request.POST.get('delivery_type', 'Delivery')
+    shipping_address = request.POST.get('shipping_address', '')
+    shipping_city = request.POST.get('shipping_city', '')
+    shipping_country = request.POST.get('shipping_country', '')
+    shipping_phone = request.POST.get('shipping_phone', '')
+    payment_method = request.POST.get('payment_method', 'COD')
+    save_to_profile = request.POST.get('save_to_profile', 'false')
         
     # Start atomic database transaction to prevent race conditions during purchase
     try:
@@ -102,7 +114,13 @@ def checkout(request):
             order = Order.objects.create(
                 user=request.user, 
                 total_price=cart_total, 
-                status='Pending'
+                status='Pending',
+                delivery_type=delivery_type,
+                shipping_address=shipping_address if delivery_type == 'Delivery' else 'Store Pickup',
+                shipping_city=shipping_city if delivery_type == 'Delivery' else 'Accra',
+                shipping_country=shipping_country if delivery_type == 'Delivery' else 'Ghana',
+                shipping_phone=shipping_phone,
+                payment_method=payment_method
             )
             
             # Step 3: Create OrderItems
@@ -118,7 +136,18 @@ def checkout(request):
             for product in products_to_update:
                 product.save()
                 
-            # Step 5: Clear items in the Cart
+            # Step 5: Save to user profile if checked
+            if save_to_profile == 'true' or save_to_profile == 'on':
+                profile, _ = UserProfile.objects.get_or_create(user=request.user)
+                if delivery_type == 'Delivery':
+                    profile.address = shipping_address
+                    profile.city = shipping_city
+                    profile.country = shipping_country
+                profile.phone_number = shipping_phone
+                profile.payment_method = payment_method
+                profile.save()
+                
+            # Step 6: Clear items in the Cart
             items.delete()
             
             messages.success(request, "Order placed successfully!")

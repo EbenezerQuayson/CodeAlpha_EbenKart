@@ -1,0 +1,263 @@
+{% extends 'catalog/base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="profile-dashboard">
+    <!-- Header banner -->
+    <div class="profile-hero">
+        <div class="profile-hero-content">
+            <div class="profile-avatar-large">
+                {{ user.username|slice:":2"|upper }}
+            </div>
+            <div class="profile-user-meta">
+                <h1>Welcome, {{ user.first_name|default:user.username }}!</h1>
+                <p>Member since {{ user.date_joined|date:"F d, Y" }}</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="profile-container">
+        <!-- Sidebar Navigation Tabs -->
+        <aside class="profile-sidebar">
+            <button class="tab-btn {% if active_tab == 'profile' %}active{% endif %}" onclick="switchTab(event, 'tab-profile')">
+                <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+                Personal Info
+            </button>
+            <button class="tab-btn {% if active_tab == 'delivery' %}active{% endif %}" onclick="switchTab(event, 'tab-delivery')">
+                <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 22s-8-4.5-8-11.8A8 8 0 0 1 12 2a8 8 0 0 1 8 8.2c0 7.3-8 11.8-8 11.8z"></path><circle cx="12" cy="10" r="3"></circle></svg>
+                Delivery & Payment
+            </button>
+            <button class="tab-btn {% if active_tab == 'cart' %}active{% endif %}" onclick="switchTab(event, 'tab-cart')">
+                <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="9" cy="21" r="1"></circle><circle cx="20" cy="21" r="1"></circle><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path></svg>
+                Active Cart ({{ cart_items|length }})
+            </button>
+            <button class="tab-btn {% if active_tab == 'orders' %}active{% endif %}" onclick="switchTab(event, 'tab-orders')">
+                <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+                Order History ({{ orders|length }})
+            </button>
+            <div class="sidebar-divider"></div>
+            <a href="{% url 'password_change' %}" class="tab-btn security-btn">
+                <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
+                Change Password
+            </a>
+        </aside>
+
+        <!-- Main Content Area -->
+        <main class="profile-content">
+            <form method="post" action="{% url 'profile_view' %}" class="profile-forms">
+                {% csrf_token %}
+
+                <!-- Tab: Personal Info -->
+                <div id="tab-profile" class="tab-pane {% if active_tab == 'profile' %}active{% endif %}">
+                    <h2>Personal Information</h2>
+                    <p class="tab-subtitle">Update your personal account settings and contact information.</p>
+                    
+                    <div class="profile-form-grid">
+                        <div class="form-group-custom">
+                            <label>Username</label>
+                            <input type="text" class="form-input" value="{{ user.username }}" disabled style="background-color: #eae6e1; cursor: not-allowed;">
+                            <small class="form-help">Username cannot be changed.</small>
+                        </div>
+                        <div class="form-group-custom">
+                            <label>Email Address</label>
+                            {{ u_form.email }}
+                            {% if u_form.email.errors %}
+                                <span class="error-msg">{{ u_form.email.errors }}</span>
+                            {% endif %}
+                        </div>
+                        <div class="form-group-custom">
+                            <label>First Name</label>
+                            {{ u_form.first_name }}
+                        </div>
+                        <div class="form-group-custom">
+                            <label>Last Name</label>
+                            {{ u_form.last_name }}
+                        </div>
+                    </div>
+                    <div class="form-actions">
+                        <button type="submit" class="btn-primary" style="border-radius: 4px; padding: 0.6rem 2rem;">Save Changes</button>
+                    </div>
+                </div>
+
+                <!-- Tab: Delivery & Payment -->
+                <div id="tab-delivery" class="tab-pane {% if active_tab == 'delivery' %}active{% endif %}">
+                    <h2>Delivery Details & Payment Method</h2>
+                    <p class="tab-subtitle">Provide your delivery location and preferred payment method to speed up checkout.</p>
+                    
+                    <div class="profile-form-grid">
+                        <div class="form-group-custom full-width">
+                            <label>Street Address / Delivery Location</label>
+                            {{ p_form.address }}
+                        </div>
+                        <div class="form-group-custom">
+                            <label>City</label>
+                            {{ p_form.city }}
+                        </div>
+                        <div class="form-group-custom">
+                            <label>Country</label>
+                            {{ p_form.country }}
+                        </div>
+                        <div class="form-group-custom">
+                            <label>Phone Number (for contact)</label>
+                            {{ p_form.phone_number }}
+                        </div>
+                        <div class="form-group-custom">
+                            <label>Preferred Method of Payment</label>
+                            {{ p_form.payment_method }}
+                        </div>
+                    </div>
+                    <div class="form-actions">
+                        <button type="submit" class="btn-primary" style="border-radius: 4px; padding: 0.6rem 2rem;">Save Info</button>
+                    </div>
+                </div>
+            </form>
+
+            <!-- Tab: Active Cart -->
+            <div id="tab-cart" class="tab-pane {% if active_tab == 'cart' %}active{% endif %}">
+                <h2>Your Shopping Cart Items</h2>
+                <p class="tab-subtitle">Products currently saved in your active cart.</p>
+
+                {% if cart_items %}
+                <div class="profile-cart-list">
+                    {% for item in cart_items %}
+                    <div class="profile-cart-item">
+                        <div class="cart-item-img-container">
+                            {% if item.product.image_url %}
+                                <img src="{{ item.product.image_url }}" alt="{{ item.product.name }}">
+                            {% else %}
+                                <div class="no-img-placeholder">No Image</div>
+                            {% endif %}
+                        </div>
+                        <div class="cart-item-info">
+                            <h3><a href="{% url 'product_detail' item.product.id %}">{{ item.product.name }}</a></h3>
+                            <p class="cart-item-price">GH₵ {{ item.product.price }} x {{ item.quantity }}</p>
+                        </div>
+                        <div class="cart-item-subtotal">
+                            <span>GH₵ {{ item.subtotal }}</span>
+                        </div>
+                        <div class="cart-item-actions">
+                            <a href="{% url 'remove_from_cart' item.id %}?next=profile" class="remove-link" style="color: var(--danger); font-weight: 600; text-decoration: underline;">Remove</a>
+                        </div>
+                    </div>
+                    {% endfor %}
+                    <div class="profile-cart-summary">
+                        <div class="cart-summary-row" style="margin-bottom: 1.5rem;">
+                            <span>Total Items:</span>
+                            <strong style="font-size: 1.2rem;">{{ cart_items|length }}</strong>
+                        </div>
+                        <a href="{% url 'cart_detail' %}" class="btn-primary" style="display: block; width: 100%; border-radius: 4px;">Go to Cart Details & Checkout</a>
+                    </div>
+                </div>
+                {% else %}
+                <div class="empty-tab-state">
+                    <span class="empty-icon" style="font-size: 3rem;">🛒</span>
+                    <h3 style="margin-top: 1rem;">Your cart is empty</h3>
+                    <p style="color: var(--text-light); margin-bottom: 1.5rem;">There are no items saved in your shopping cart right now.</p>
+                    <a href="{% url 'shop_home' %}" class="btn-primary">Browse Products</a>
+                </div>
+                {% endif %}
+            </div>
+
+            <!-- Tab: Order History -->
+            <div id="tab-orders" class="tab-pane {% if active_tab == 'orders' %}active{% endif %}">
+                <h2>Your Order History</h2>
+                <p class="tab-subtitle">Track your past purchases and delivery statuses.</p>
+
+                {% if orders %}
+                <div class="orders-timeline">
+                    {% for order in orders %}
+                    <div class="profile-order-card">
+                        <div class="order-card-header">
+                            <div>
+                                <span class="order-id">Order #{{ order.id }}</span>
+                                <span class="order-date">{{ order.created_at|date:"M d, Y, h:i A" }}</span>
+                            </div>
+                            <span class="order-status-badge status-{{ order.status|lower }}">{{ order.status }}</span>
+                        </div>
+                        
+                        <div class="order-card-body">
+                            <table class="order-items-table-simple">
+                                <thead>
+                                    <tr>
+                                        <th>Product</th>
+                                        <th style="text-align: center;">Qty</th>
+                                        <th style="text-align: right;">Price</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for item in order.items.all %}
+                                    <tr>
+                                        <td>{{ item.product.name|default:"Deleted Product" }}</td>
+                                        <td style="text-align: center;">{{ item.quantity }}</td>
+                                        <td style="text-align: right;">GH₵ {{ item.price }}</td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                        
+                        <div class="order-card-footer">
+                            <span>Total Paid:</span>
+                            <span class="order-total-price">GH₵ {{ order.total_price }}</span>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+                {% else %}
+                <div class="empty-tab-state">
+                    <span class="empty-icon" style="font-size: 3rem;">📦</span>
+                    <h3 style="margin-top: 1rem;">No orders yet</h3>
+                    <p style="color: var(--text-light); margin-bottom: 1.5rem;">You haven't placed any orders with EbenKart yet.</p>
+                    <a href="{% url 'shop_home' %}" class="btn-primary">Shop Now</a>
+                </div>
+                {% endif %}
+            </div>
+        </main>
+    </div>
+</div>
+
+<script>
+    function switchTab(event, tabId) {
+        // Prevent form submission if inside a form
+        if (event) {
+            event.preventDefault();
+        }
+        
+        // Remove active class from all buttons
+        const buttons = document.querySelectorAll('.tab-btn');
+        buttons.forEach(btn => btn.classList.remove('active'));
+        
+        // Add active class to clicked button
+        if (event && event.currentTarget) {
+            event.currentTarget.classList.add('active');
+        }
+        
+        // Hide all tab panes
+        const panes = document.querySelectorAll('.tab-pane');
+        panes.forEach(pane => pane.classList.remove('active'));
+        
+        // Show target tab pane
+        const targetPane = document.getElementById(tabId);
+        if (targetPane) {
+            targetPane.classList.add('active');
+        }
+        
+        // Update URL hash/query parameter without reloading
+        const tabName = tabId.replace('tab-', '');
+        const newUrl = window.location.protocol + "//" + window.location.host + window.location.pathname + '?tab=' + tabName;
+        window.history.pushState({ path: newUrl }, '', newUrl);
+    }
+    
+    // On load, activate tab from URL query param if present
+    document.addEventListener("DOMContentLoaded", function() {
+        const urlParams = new URLSearchParams(window.location.search);
+        const tabParam = urlParams.get('tab');
+        if (tabParam) {
+            const tabButton = document.querySelector(`button[onclick*="tab-${tabParam}"]`);
+            if (tabButton) {
+                tabButton.click();
+            }
+        }
+    });
+</script>
+{% endblock %}
