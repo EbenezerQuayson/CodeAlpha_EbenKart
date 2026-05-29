@@ -143,8 +143,8 @@ Quit the server with CTRL-BREAK (or CTRL-C).
 
 ## Tech Stack
 
-* **Language:** Python
-* **Framework:** Django 6.0.5
+* **Language:** HTML, CSS, JavaScript and Python
+* **Framework:** Django 6.0.5 and Bootstrap
 * **Database:** SQLite (local development database)
 
 ---
