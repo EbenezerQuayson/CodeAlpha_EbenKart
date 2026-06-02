@@ -15,6 +15,13 @@
             <form method="get" action="{% url 'shop_home' %}" id="filter-form">
                 <h3>Filters</h3>
                 
+                <!-- Search -->
+                <div class="filter-group">
+                    <h4 style="font-size: 0.95rem; margin-bottom: 0.75rem; text-transform: uppercase; letter-spacing: 0.5px;">Search</h4>
+                    <input type="text" name="search" placeholder="Search products..." value="{{ search_query }}" style="width: 100%; padding: 0.5rem; border: 1px solid var(--border); border-radius: 4px; font-family: inherit; font-size: 0.95rem; margin-bottom: 0.5rem;" onkeypress="if(event.key === 'Enter') this.form.submit()">
+                    <button type="button" onclick="this.form.submit()" class="btn-secondary" style="width: 100%; text-align: center; padding: 0.4rem; font-size: 0.85rem;">Search</button>
+                </div>
+                
                 <!-- Categories -->
                 <div class="filter-group">
                     <h4 style="font-size: 0.95rem; margin-bottom: 0.75rem; text-transform: uppercase; letter-spacing: 0.5px;">Categories</h4>

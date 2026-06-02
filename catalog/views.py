@@ -33,6 +33,11 @@ def register(request):
 def shop_home(request):
     products = Product.objects.all()
     
+    # Search Filter
+    search_query = request.GET.get('search', '')
+    if search_query:
+        products = products.filter(Q(name__icontains=search_query) | Q(description__icontains=search_query))
+    
     # Category Filter (mapping check boxes to name search keywords)
     selected_categories = request.GET.getlist('category')
     if selected_categories:
@@ -67,6 +72,7 @@ def shop_home(request):
         'selected_categories': selected_categories,
         'price_range': price_range or '350',  # default max price slider value
         'sort_by': sort_by or '',
+        'search_query': search_query,
     }
     return render(request, 'catalog/shop.html', context)
 
