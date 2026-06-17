@@ -1,0 +1,60 @@
+{% extends 'catalog/base.html' %}
+{% load static %}
+
+{% block content %}
+    <!-- Page Header -->
+    <header class="page-header">
+        <h1>Contact Us</h1>
+        <p>Get in touch with our concierge team for styling inquiries, orders, or support</p>
+    </header>
+
+    <!-- Contact Section -->
+    <section class="contact-section">
+        <div class="contact-container">
+            <!-- Contact Form -->
+            <div class="contact-form-wrapper">
+                <h2>Send Us a Message</h2>
+                <form action="{% url 'contact_view' %}" method="post">
+                    {% csrf_token %}
+                    <div class="form-group">
+                        <label for="name">Your Name</label>
+                        <input type="text" id="name" name="name" placeholder="Enter your name" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="email">Email Address</label>
+                        <input type="email" id="email" name="email" placeholder="Enter your email" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="message">Your Message</label>
+                        <textarea id="message" name="message" rows="6" placeholder="How can we assist you?" required></textarea>
+                    </div>
+                    <button type="submit" class="btn-primary">Send Message</button>
+                </form>
+            </div>
+
+            <!-- Contact Info -->
+            <div class="contact-info">
+                <h2>Our Details</h2>
+                
+                <div class="info-item">
+                    <h3>Direct Contact</h3>
+                    <p><strong>Concierge:</strong> +233 538697161</p>
+                    <p><strong>General Support:</strong> ebenezerquayson379@gmail.com</p>
+                </div>
+                
+                <div class="info-item">
+                    <h3>Headquarters</h3>
+                    <p>EbenKart Atelier</p>
+                    <p>East Legon, Boundary Road</p>
+                    <p>Accra, Ghana</p>
+                </div>
+                
+                <div class="info-item">
+                    <h3>Hours of Operation</h3>
+                    <p>Monday – Friday: 9:00 AM – 6:00 PM (GMT)</p>
+                    <p>Saturday: 10:00 AM – 4:00 PM (GMT)</p>
+                </div>
+            </div>
+        </div>
+    </section>
+{% endblock %}
