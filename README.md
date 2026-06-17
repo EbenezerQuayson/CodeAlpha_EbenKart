@@ -1,25 +1,25 @@
-# CodeAlpha EbenKart 🛒
+# CodeAlpha EbenKart 
 
 Welcome to **CodeAlpha EbenKart**, a robust, database-driven e-commerce backend built with Python and Django. This project provides a structured database schema and admin interface to manage a catalog of products, user shopping carts, and completed orders.
 
 ---
 
-## 🌟 Features
+## Features
 
 ### 📦 1. Catalog Management (`catalog` app)
 * **Product Model:** Fields for name, description, price, stock quantity, image URLs, and auto-timestamps.
 * **Admin Customization:** Register products in the admin panel for quick creation, deletion, and searching.
 
-### 🛒 2. Shopping Cart & Order Tracking (`cart` app)
+### 2. Shopping Cart & Order Tracking (`cart` app)
 * **Active Cart (`Cart`, `CartItem`):** Tracks current active shopping sessions, linked uniquely per Django user.
 * **Order History (`Order`, `OrderItem`):** Saves permanent records of finalized checkouts. If a product is removed from the active catalog, historical order details persist without crashing.
 
-### 🔒 3. Admin Control Panel
+###  3. Admin Control Panel
 * Pre-configured Django administration dashboards for easy management of products, customer carts, and orders.
 
 ---
 
-## 📂 Project Structure
+## Project Structure
 
 ```text
 CodeAlpha_EbenKart/
@@ -46,7 +46,7 @@ CodeAlpha_EbenKart/
 
 ---
 
-## 🚀 Installation & Setup Guide
+## Installation & Setup Guide
 
 Follow these steps to set up and run CodeAlpha EbenKart on your local environment:
 
@@ -111,7 +111,7 @@ python manage.py runserver
 
 ---
 
-## 💻 How to Use
+##  How to Use
 
 1. Once the server is running, open your web browser and go to:
    [http://127.0.0.1:8000/admin/](http://127.0.0.1:8000/admin/)
@@ -123,7 +123,7 @@ python manage.py runserver
 
 ---
 
-## 🛠 Tech Stack
+##  Tech Stack
 * **Language:** Python
 * **Framework:** Django 6.0.5
 * **Database:** SQLite (default development database)
